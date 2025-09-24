@@ -10,6 +10,13 @@ st.write(
   """
 )
 
+# snowpark session creation here (get_session()), then:
+sp_df = (session.table("SMOOTHIES.PUBLIC.FRUIT_OPTIONS")
+               .select(col("FRUIT_NAME"), col("SEARCH_ON"))
+               .sort(col("FRUIT_NAME")))
+
+# Pandas copy for easy lookup
+pd_df = sp_df.to_pandas()
 
 
 st.subheader("Build your smoothie")
