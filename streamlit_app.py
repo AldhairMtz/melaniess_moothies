@@ -34,3 +34,24 @@ submitted = st.button('Submit')
 
 if submitted:
     st.success("Someone clicked the button.", icon='👍')
+
+
+from snowflake.snowpark import Session
+
+st.title("Snowpark connectivity test")
+
+try:
+    cfg = st.secrets["snowflake"]
+    session = Session.builder.configs({
+        "account": cfg["account"],
+        "user": cfg["user"],
+        "password": cfg["password"],
+        "role": cfg.get("role","SYSADMIN"),
+        "warehouse": cfg.get("warehouse","COMPUTE_WH"),
+        "database": cfg.get("database","SMOOTHIES"),
+        "schema": cfg.get("schema","PUBLIC"),
+    }).create()
+    st.success("Connected to Snowflake ✅")
+    st.write(session.sql("select current_warehouse(), current_database(), current_schema()").to_pandas())
+except Exception as e:
+    st.error(f"Connection/setup failed: {e}")
